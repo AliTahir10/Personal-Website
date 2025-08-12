@@ -169,7 +169,7 @@
       <!-- Accenture: Software Engineer + DevOps in single box -->
       <article class="rounded-2xl border border-slate-200 dark:border-slate-800 p-5">
         <h3 class="text-base font-semibold flex items-center gap-2 mb-1"><i data-lucide="briefcase" class="h-5 w-5"></i> Software Engineer / DevOps Engineer</h3>
-        <div class="flex items-center justify-between text-sm mb-2"><span class="font-medium">Accenture</span><span class="opacity-80">Mar 2025 – Present</span></div>
+        <div class="flex items-center justify-between text-sm mb-2"><span class="font-medium">Accenture</span><span class="opacity-80">2025 – Present</span></div>
         <ul class="text-sm text-slate-600 dark:text-slate-300 list-disc pl-5 space-y-1">
           <li>Built scalable services and web apps for enterprise clients.</li>
           <li>Collaborated with cross‑functional teams to ship quality features.</li>
@@ -180,17 +180,29 @@
       <!-- Wilson James -->
       <article class="rounded-2xl border border-slate-200 dark:border-slate-800 p-5">
         <h3 class="text-base font-semibold flex items-center gap-2 mb-1"><i data-lucide="briefcase" class="h-5 w-5"></i> Team Delivery Manager</h3>
-        <div class="flex items-center justify-between text-sm mb-2"><span class="font-medium">Wilson James</span><span class="opacity-80">2023 – Mar 2025</span></div>
+        <div class="flex items-center justify-between text-sm mb-2"><span class="font-medium">Wilson James</span><span class="opacity-80">2023 – 2025</span></div>
+        <ul class="text-sm text-slate-600 dark:text-slate-300 list-disc pl-5 space-y-1">
+          <li>Oversaw end‑to‑end project delivery and cross‑team coordination.</li>
+          <li>Improved operational efficiency through process streamlining.</li>
+        </ul>
       </article>
       <!-- FootfallCam -->
       <article class="rounded-2xl border border-slate-200 dark:border-slate-800 p-5">
         <h3 class="text-base font-semibold flex items-center gap-2 mb-1"><i data-lucide="square-terminal" class="h-5 w-5"></i> IT Support Engineer</h3>
         <div class="flex items-center justify-between text-sm mb-2"><span class="font-medium">FootfallCam</span><span class="opacity-80">2021 – 2022</span></div>
+        <ul class="text-sm text-slate-600 dark:text-slate-300 list-disc pl-5 space-y-1">
+          <li>Deployed and supported people‑counting systems for clients.</li>
+          <li>Developed internal tools to speed up troubleshooting.</li>
+        </ul>
       </article>
       <!-- University of Surrey -->
       <article class="rounded-2xl border border-slate-200 dark:border-slate-800 p-5">
         <h3 class="text-base font-semibold flex items-center gap-2 mb-1"><i data-lucide="medal" class="h-5 w-5"></i> Peer Assisted Learning Support</h3>
         <div class="flex items-center justify-between text-sm mb-2"><span class="font-medium">University of Surrey</span><span class="opacity-80">2020 – 2022</span></div>
+        <ul class="text-sm text-slate-600 dark:text-slate-300 list-disc pl-5 space-y-1">
+          <li>Mentored students in CS fundamentals.</li>
+          <li>Facilitated study sessions and exam prep.</li>
+        </ul>
       </article>
     </div>
   </section>
@@ -253,6 +265,15 @@
           <div class="flex items-center justify-between"><h3 class="text-base font-semibold">Processing Sub System (Java)</h3><i data-lucide="external-link" class="h-4 w-4 opacity-70"></i></div>
           <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">Data processing pipeline in Java.</p>
           <div class="flex flex-wrap gap-2 mt-3 text-xs"><span class="px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700">Java</span><span class="px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700">Pipelines</span></div>
+        </div>
+      </a>
+
+      <a href="https://alitahir7.pythonanywhere.com" class="group rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden block">
+        <div class="aspect-video overflow-hidden"><img src="/img/portfolio/thumbnails/racket-weather.jpg" alt="Cafe Manager" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"></div>
+        <div class="p-5">
+          <div class="flex items-center justify-between"><h3 class="text-base font-semibold">Cafe Manager</h3><i data-lucide="external-link" class="h-4 w-4 opacity-70"></i></div>
+          <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">Fully‑fledged café ordering system built in Python.</p>
+          <div class="flex flex-wrap gap-2 mt-3 text-xs"><span class="px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700">Python</span><span class="px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700">Web App</span></div>
         </div>
       </a>
     </div>
@@ -325,6 +346,7 @@
     document.getElementById('themeToggle').addEventListener('click', () => {
       const isDark = document.documentElement.classList.toggle('dark');
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      // swap visible icon
       document.getElementById('sun').classList.toggle('hidden', !isDark);
       document.getElementById('moon').classList.toggle('hidden', isDark);
     });

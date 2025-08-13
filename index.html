@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="scroll-smooth scroll-pt-28 md:scroll-pt-32">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -35,9 +35,17 @@
 
   <style>
     :focus-visible { outline: 2px solid rgb(99 102 241); outline-offset: 2px; border-radius: .5rem; }
-    @media (prefers-reduced-motion: reduce) { .motion-safe\:transition-none { transition: none !important; } }
+    @media (prefers-reduced-motion: reduce) { .motion-safe\\:transition-none { transition: none !important; } }
     @supports not (scroll-padding-top: 1px) { html { scroll-behavior: smooth; } }
     input, textarea, select { font-size: 16px; }
+
+    /* ---------- Global anchor offset for ALL sections ---------- */
+    :root{
+      --header-h: 80px;   /* fallback until JS measures sticky header */
+      --anchor-gap: 16px; /* breathing room below navbar */
+    }
+    html { scroll-padding-top: calc(var(--header-h) + var(--anchor-gap)) !important; }
+    section[id] { scroll-margin-top: calc(var(--header-h) + var(--anchor-gap)); }
   </style>
 
   <!-- Icons (Lucide) -->
@@ -84,7 +92,7 @@
           </svg>
         </button>
 
-        <a href="/img/CV.pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-2 h-9 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-3 text-white text-sm motion-safe:transition shadow-soft"> 
+        <a id="cvLink" href="/img/CV.pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-2 h-9 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-3 text-white text-sm motion-safe:transition shadow-soft"> 
           <i data-lucide="file-down" class="h-4 w-4"></i>
           <span>CV</span>
         </a>
@@ -130,7 +138,7 @@
   </section>
 
   <!-- About / Education -->
-  <section id="about" class="mx-auto max-w-6xl px-4 py-12 scroll-mt-24">
+  <section id="about" class="mx-auto max-w-6xl px-4 py-12">
     <div class="grid md:grid-cols-3 gap-8">
       <div class="md:col-span-2 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
         <h2 class="text-xl font-semibold flex items-center gap-2 mb-2">
@@ -157,7 +165,7 @@
   </section>
 
   <!-- Skills -->
-  <section id="skills" class="mx-auto max-w-6xl px-4 py-12 scroll-mt-24">
+  <section id="skills" class="mx-auto max-w-6xl px-4 py-12">
     <h2 class="text-2xl font-semibold mb-6 tracking-tight">Skills</h2>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -205,7 +213,7 @@
   </section>
 
   <!-- Experience -->
-  <section id="experience" class="mx-auto max-w-6xl px-4 py-12 scroll-mt-24">
+  <section id="experience" class="mx-auto max-w-6xl px-4 py-12">
     <h2 class="text-2xl font-semibold mb-6 tracking-tight">Experience</h2>
 
     <div class="grid md:grid-cols-2 gap-4">
@@ -278,7 +286,7 @@
   </section>
 
   <!-- Projects -->
-  <section id="projects" class="mx-auto max-w-6xl px-4 py-12 scroll-mt-24">
+  <section id="projects" class="mx-auto max-w-6xl px-4 py-12">
     <div class="flex items-end justify-between mb-6">
       <h2 class="text-2xl font-semibold tracking-tight">Projects</h2>
       <a href="https://github.com/AliTahir10" class="text-sm inline-flex items-center gap-1 hover:opacity-80">
@@ -288,7 +296,7 @@
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- Project 1 -->
-      <a href="http://sbcadvisory.co.uk" class="group rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden block">
+      <a href="https://sbcadvisory.co.uk" class="group rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden block">
         <div class="aspect-video overflow-hidden">
           <img src="/img/portfolio/thumbnails/deep-dreams.jpg" alt="SBC Advisory" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
         </div>
@@ -306,7 +314,7 @@
       </a>
 
       <!-- Project 2 -->
-      <a href="http://www.crime-eye.com" class="group rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden block">
+      <a href="https://www.crime-eye.com" class="group rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden block">
         <div class="aspect-video overflow-hidden">
           <img src="/img/portfolio/thumbnails/car-data-scraping.jpg" alt="Crime-eye" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
         </div>
@@ -399,8 +407,51 @@
     </div>
   </section>
 
+  <!-- Fun -->
+  <section id="fun" class="mx-auto max-w-6xl px-4 py-12">
+    <h2 class="text-2xl font-semibold mb-6 tracking-tight">Fun</h2>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <a class="group block rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div class="aspect-[4/3] overflow-hidden">
+          <img src="/img/portfolio/thumbnails/badminton.jpg" alt="Badminton" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+        </div>
+        <div class="p-5">
+          <h3 class="text-base font-semibold">Badminton</h3>
+        </div>
+      </a>
+
+      <a class="group block rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div class="aspect-[4/3] overflow-hidden">
+          <img src="/img/portfolio/thumbnails/cricket.jpg" alt="Cricket" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+        </div>
+        <div class="p-5">
+          <h3 class="text-base font-semibold">Cricket</h3>
+        </div>
+      </a>
+
+      <a class="group block rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div class="aspect-[4/3] overflow-hidden">
+          <img src="/img/portfolio/thumbnails/football.jpg" alt="Football" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+        </div>
+        <div class="p-5">
+          <h3 class="text-base font-semibold">Football</h3>
+        </div>
+      </a>
+
+      <a class="group block rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div class="aspect-[4/3] overflow-hidden">
+          <img src="/img/portfolio/thumbnails/travelling.jpg" alt="Travelling" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+        </div>
+        <div class="p-5">
+          <h3 class="text-base font-semibold">Travelling</h3>
+        </div>
+      </a>
+    </div>
+  </section>
+
   <!-- Contact -->
-  <section id="contact" class="mx-auto max-w-6xl px-4 py-12 scroll-mt-24">
+  <section id="contact" class="mx-auto max-w-6xl px-4 py-12">
     <div class="grid md:grid-cols-2 gap-8 items-start">
       <div>
         <h2 class="text-2xl font-semibold tracking-tight mb-2">Contact</h2>
@@ -464,15 +515,15 @@
 
   <!-- Scripts -->
   <script>
-    // Icons
+    // ---------- Icons ----------
     window.addEventListener('DOMContentLoaded', () => {
       if (window.lucide && typeof window.lucide.createIcons === 'function') window.lucide.createIcons();
     });
 
-    // Footer year
+    // ---------- Footer year ----------
     (function(){ const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear(); })();
 
-    // Theme toggle
+    // ---------- Theme toggle ----------
     (function(){
       const btn=document.getElementById('themeToggle'); if(!btn) return;
       btn.addEventListener('click', ()=>{
@@ -483,12 +534,38 @@
       });
     })();
 
-    // External links target
+    // ---------- New tab behavior: external links + PDFs ----------
     window.addEventListener('DOMContentLoaded', ()=>{
       document.querySelectorAll('a[href^="http"]').forEach(a=>{ a.target='_blank'; a.rel='noopener noreferrer'; });
+      document.querySelectorAll('a[href$=".pdf"]').forEach(a=>{ a.target='_blank'; a.rel='noopener'; a.type='application/pdf'; });
     });
 
-    // ---------- ROBUST CONTACT FORM HANDLER ----------
+    // ---------- Force CV open in a new tab reliably ----------
+    (function(){
+      const cv=document.getElementById('cvLink');
+      if(!cv) return;
+      cv.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const url=new URL(cv.getAttribute('href'), location.origin).href;
+        window.open(url, '_blank', 'noopener');
+      }, { passive:false });
+    })();
+
+    // ---------- Dynamic header height -> anchor offset for ALL sections ----------
+    (function(){
+      const header=document.querySelector('header');
+      const set=()=>{
+        const h = header ? Math.ceil(header.getBoundingClientRect().height) : 80;
+        document.documentElement.style.setProperty('--header-h', `${h}px`);
+      };
+      set();
+      window.addEventListener('load', set);
+      window.addEventListener('resize', set);
+      try { if (document.fonts && document.fonts.ready) document.fonts.ready.then(set); } catch(_) {}
+      try { new ResizeObserver(set).observe(header); } catch(_) {}
+    })();
+
+    // ---------- CONTACT FORM: fetch submit + BFCache reset ----------
     (function(){
       let bound=false;
       function bindFormHandler(){
@@ -496,7 +573,6 @@
         const form=document.getElementById('contactForm');
         if(!form) return;
 
-        // avoid double-binding if DOM frameworks hot-reload/replace content
         if(form.dataset.jsBound === 'true'){ bound=true; return; }
         form.dataset.jsBound='true';
         bound=true;
@@ -555,7 +631,7 @@
           }
         });
 
-        // Clear on BFCache restore (Safari/Firefox via persisted, Chrome via navigation type)
+        // Clear on BFCache restore and page show
         window.addEventListener('pageshow', (e)=>{
           let fromBFCache=!!e.persisted;
           try{
@@ -564,24 +640,17 @@
           }catch(_){}
           if(fromBFCache) resetContactForm();
         });
-
-        // Optional hard mode: uncomment to disable BFCache entirely (forces reload = blank form)
-        // window.addEventListener('unload', ()=>{});
       }
 
-      // Bind as soon as possible—even if script moved to <head>
       if(document.readyState==='loading'){
         document.addEventListener('DOMContentLoaded', bindFormHandler);
       }else{
         bindFormHandler();
       }
 
-      // Also bind on Turbo/Hotwire or PJAX-like events if present
       window.addEventListener('turbo:load', bindFormHandler);
       window.addEventListener('htmx:load', bindFormHandler);
     })();
   </script>
-
-  <!-- filler to exceed 500 lines -->
 </body>
 </html>

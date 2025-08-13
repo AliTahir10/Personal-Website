@@ -38,19 +38,10 @@
     @media (prefers-reduced-motion: reduce) { .motion-safe\:transition-none { transition: none !important; } }
     input, textarea, select { font-size: 16px; }
 
-    /* Sticky header → offset anchored sections */
-    :root{
-      --header-h: 72px;
-      --anchor-gap: 12px;
-    }
+    /* Anchor offset for sticky header */
+    :root{ --header-h: 80px; --anchor-gap: 16px; }
     html { scroll-padding-top: calc(var(--header-h) + var(--anchor-gap)) !important; }
     section[id] { scroll-margin-top: calc(var(--header-h) + var(--anchor-gap)); }
-
-    /* Mobile drawer base (no Tailwind plugin needed) */
-    .drawer-enter { transform: translateX(100%); }
-    .drawer-enter-active { transform: translateX(0); transition: transform .25s ease; }
-    .drawer-exit { transform: translateX(0); }
-    .drawer-exit-active { transform: translateX(100%); transition: transform .25s ease; }
   </style>
 
   <!-- Icons (Lucide) -->
@@ -58,7 +49,7 @@
 
   <link rel="icon" href="/img/favicon.ico">
 
-  <!-- Pre-paint theme init (avoid flash) -->
+  <!-- Pre-paint theme init (to avoid flash) -->
   <script>
     (function(){
       try {
@@ -70,14 +61,57 @@
   </script>
 </head>
 
-<body class="bg-gradient-to-b from-slate-50 to-white text-slate-800 dark:from-slate-950 dark:to-slate-900 dark:text-slate-100 font-sans">
+<body class="bg-gradient-to-b from-slate-50 to-white text-slate-800 dark:from-slate-950 dark:to-slate-900 dark:text-slate-100">
+
+  <!-- Mobile Backdrop -->
+  <div id="mobileBackdrop" class="fixed inset-0 bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300 z-40"></div>
+
+  <!-- Mobile Drawer -->
+  <aside id="mobileMenu"
+         class="fixed inset-y-0 left-0 w-80 max-w-[85%] -translate-x-full transition-transform duration-300 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur shadow-2xl border-r border-slate-200 dark:border-slate-800 overflow-y-auto">
+    <!-- Sticky drawer header -->
+    <div class="sticky top-0 z-10 bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
+      <span class="font-semibold">Menu</span>
+      <button id="mobileClose" aria-label="Close menu" class="h-9 w-9 inline-flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="px-4 py-4 grid gap-2 text-base">
+      <a href="#home" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Home</a>
+      <a href="#about" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">About</a>
+      <a href="#skills" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Skills</a>
+      <a href="#experience" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Experience</a>
+      <a href="#projects" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Projects</a>
+      <a href="#fun" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Fun</a>
+      <a href="#contact" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">Contact</a>
+    </nav>
+
+    <div class="px-4 py-4 border-t border-slate-200 dark:border-slate-800 grid gap-3">
+      <a id="cvLinkMobile" href="/img/CV.pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-2 h-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-3 text-white text-sm shadow-soft">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        CV
+      </a>
+      <button id="themeToggleMobile" class="inline-flex items-center gap-2 h-10 rounded-xl border border-slate-200 dark:border-slate-700 px-3 text-sm hover:bg-slate-100 dark:hover:bg-slate-800">
+        <span class="i">Toggle Theme</span>
+      </button>
+    </div>
+  </aside>
 
   <!-- Navbar -->
   <header id="siteHeader" class="sticky top-0 z-40 backdrop-blur bg-white/80 dark:bg-slate-900/70 border-b border-slate-200/60 dark:border-slate-800">
     <div class="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
-      <a href="#home" class="font-semibold tracking-tight text-lg">Ali Tahir</a>
+      <div class="flex items-center gap-2">
+        <button id="mobileOpen" class="md:hidden inline-flex items-center justify-center h-9 w-9 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800" aria-label="Open menu">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <a href="#home" class="font-semibold tracking-tight text-lg">Ali Tahir</a>
+      </div>
 
-      <!-- Desktop Nav -->
       <nav class="hidden md:flex gap-6 text-sm">
         <a href="#about" class="hover:opacity-80">About</a>
         <a href="#skills" class="hover:opacity-80">Skills</a>
@@ -87,10 +121,8 @@
         <a href="#contact" class="hover:opacity-80">Contact</a>
       </nav>
 
-      <!-- Right Actions -->
       <div class="flex items-center gap-2">
-        <!-- Theme Toggle -->
-        <button id="themeToggle" class="hidden sm:inline-flex items-center justify-center h-9 w-9 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 motion-safe:transition" aria-label="Toggle theme">
+        <button id="themeToggle" class="inline-flex items-center justify-center h-9 w-9 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 motion-safe:transition" aria-label="Toggle theme">
           <svg id="sun" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden dark:inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="4"></circle>
             <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
@@ -100,51 +132,16 @@
           </svg>
         </button>
 
-        <!-- CV -->
         <a id="cvLink" href="/img/CV.pdf" target="_blank" rel="noopener" class="hidden sm:inline-flex items-center gap-2 h-9 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-3 text-white text-sm motion-safe:transition shadow-soft">
-          <i data-lucide="file-down" class="h-4 w-4"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           <span>CV</span>
         </a>
-
-        <!-- Mobile Menu Button -->
-        <button id="menuBtn" class="md:hidden inline-flex items-center justify-center h-9 w-9 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800" aria-controls="mobileNav" aria-expanded="false" aria-label="Open menu">
-          <i data-lucide="menu" class="h-5 w-5"></i>
-        </button>
       </div>
-    </div>
-
-    <!-- Mobile Drawer -->
-    <div id="mobileNav" class="fixed inset-0 z-50 pointer-events-none" hidden>
-      <div id="overlay" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm opacity-0 transition-opacity"></div>
-      <nav id="drawer" class="absolute right-0 top-0 h-full w-[85%] xs:w-4/5 sm:w-96 bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 shadow-2xl drawer-enter p-5 space-y-4 overflow-y-auto">
-        <div class="flex items-center justify-between">
-          <span class="font-semibold">Menu</span>
-          <button id="closeBtn" class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800" aria-label="Close menu">
-            <i data-lucide="x" class="h-5 w-5"></i>
-          </button>
-        </div>
-        <div class="grid gap-2">
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#about">About</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#skills">Skills</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#experience">Experience</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#projects">Projects</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#fun">Fun</a>
-          <a class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" href="#contact">Contact</a>
-        </div>
-        <div class="pt-2 border-t border-slate-200 dark:border-slate-800">
-          <a href="/img/CV.pdf" target="_blank" rel="noopener" class="mt-3 inline-flex items-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white h-10 px-4 text-sm w-full justify-center">
-            <i data-lucide="file-down" class="h-4 w-4"></i> CV
-          </a>
-          <button id="themeToggleMobile" class="mt-3 inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 h-10 px-4 text-sm w-full justify-center">
-            <i data-lucide="moon" class="h-4 w-4"></i> Toggle theme
-          </button>
-        </div>
-      </nav>
     </div>
   </header>
 
   <!-- Hero -->
-  <section id="home" class="relative mx-auto max-w-6xl px-4 pt-12 md:pt-20 pb-10 md:pb-12">
+  <section id="home" class="relative mx-auto max-w-6xl px-4 pt-14 md:pt-20 pb-10 md:pb-12">
     <div class="grid md:grid-cols-2 gap-8 items-center">
       <div>
         <div class="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-800 px-3 py-1 text-xs font-medium mb-4">
@@ -156,7 +153,7 @@
           Ali Tahir
         </h1>
 
-        <p class="mt-4 text-base md:text-lg text-slate-600 dark:text-slate-300 max-w-prose">
+        <p class="mt-4 text-lg text-slate-600 dark:text-slate-300 max-w-prose">
           Computer Science graduate (First-Class Honours) from the University of Surrey. I build fast, accessible web experiences and ship reliable software.
         </p>
 
@@ -175,7 +172,7 @@
       </div>
 
       <div class="rounded-3xl overflow-hidden ring-1 ring-slate-200 dark:ring-slate-800 shadow-2xl">
-        <img src="/img/portfolio/thumbnails/deep-dreams.jpg" alt="Dream-like header" class="w-full h-full object-cover" />
+        <img src="/img/portfolio/thumbnails/deep-dreams.jpg" alt="Dream-like header" class="w-full h-full object-cover" loading="lazy" />
       </div>
     </div>
   </section>
@@ -199,13 +196,13 @@
           Highlights
         </h3>
         <ul class="text-sm text-slate-600 dark:text-slate-300 list-disc pl-5 space-y-1">
-          <li>Built production webapps (Django/Rails/React).</li>
-          <li>Automated workflows; reduced manual ops overhead.</li>
-          <li>Love sports such as badminton, cricket, and football.</li>
+          <li>Built production webapps (Django/Rails/React)</li>
+          <li>Automated workflows; reduced manual ops overhead</li>
+          <li>Love sports such as badminton, cricket and football</li>
         </ul>
       </div>
 
-      <div class="rounded-2xl border border-slate-200 dark:border-slate-800 p-6 md:col-span-3">
+      <div class="rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
         <h3 class="text-xl font-semibold flex items-center gap-2 mb-2">
           <i data-lucide="badge-check" class="h-5 w-5"></i>
           Certifications
@@ -351,7 +348,7 @@
       <!-- Project 1 -->
       <a href="http://sbcadvisory.co.uk" class="group rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden block">
         <div class="aspect-video overflow-hidden">
-          <img loading="lazy" src="/img/portfolio/thumbnails/deep-dreams.jpg" alt="SBC Advisory" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+          <img src="/img/portfolio/thumbnails/deep-dreams.jpg" alt="SBC Advisory" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
         </div>
         <div class="p-5">
           <div class="flex items-center justify-between">
@@ -369,7 +366,7 @@
       <!-- Project 2 -->
       <a href="http://www.crime-eye.com" class="group rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden block">
         <div class="aspect-video overflow-hidden">
-          <img loading="lazy" src="/img/portfolio/thumbnails/car-data-scraping.jpg" alt="Crime-eye" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+          <img src="/img/portfolio/thumbnails/car-data-scraping.jpg" alt="Crime-eye" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
         </div>
         <div class="p-5">
           <div class="flex items-center justify-between">
@@ -388,7 +385,7 @@
       <!-- Project 3 -->
       <a href="https://alitahir10.pythonanywhere.com/" class="group rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden block">
         <div class="aspect-video overflow-hidden">
-          <img loading="lazy" src="/img/portfolio/thumbnails/loan-repayment.jpg" alt="Simply Sweet" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+          <img src="/img/portfolio/thumbnails/loan-repayment.jpg" alt="Simply Sweet" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
         </div>
         <div class="p-5">
           <div class="flex items-center justify-between">
@@ -406,7 +403,7 @@
       <!-- Project 4 -->
       <a href="https://github.com/AliTahir10/jasond94.github.io" class="group rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden block">
         <div class="aspect-video overflow-hidden">
-          <img loading="lazy" src="/img/portfolio/thumbnails/downing-io.jpg" alt="Personal site source" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+          <img src="/img/portfolio/thumbnails/downing-io.jpg" alt="Personal site source" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
         </div>
         <div class="p-5">
           <div class="flex items-center justify-between">
@@ -424,7 +421,7 @@
       <!-- Project 5 -->
       <a href="https://gitlab.surrey.ac.uk/mt00969/os.git" class="group rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden block">
         <div class="aspect-video overflow-hidden">
-          <img loading="lazy" src="/img/portfolio/thumbnails/scrabble.jpg" alt="OS in Java" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+          <img src="/img/portfolio/thumbnails/scrabble.jpg" alt="OS in Java" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
         </div>
         <div class="p-5">
           <div class="flex items-center justify-between">
@@ -442,7 +439,7 @@
       <!-- Project 6 -->
       <a href="https://alitahir7.pythonanywhere.com" class="group rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden block">
         <div class="aspect-video overflow-hidden">
-          <img loading="lazy" src="/img/portfolio/thumbnails/racket-weather.jpg" alt="Cafe Manager" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+          <img src="/img/portfolio/thumbnails/racket-weather.jpg" alt="Cafe Manager" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
         </div>
         <div class="p-5">
           <div class="flex items-center justify-between">
@@ -466,7 +463,7 @@
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
       <a class="group block rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
         <div class="aspect-[4/3] overflow-hidden">
-          <img loading="lazy" src="/img/portfolio/thumbnails/badminton.jpg" alt="Badminton" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+          <img src="/img/portfolio/thumbnails/badminton.jpg" alt="Badminton" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
         </div>
         <div class="p-5">
           <h3 class="text-base font-semibold">Badminton</h3>
@@ -475,7 +472,7 @@
 
       <a class="group block rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
         <div class="aspect-[4/3] overflow-hidden">
-          <img loading="lazy" src="/img/portfolio/thumbnails/cricket.jpg" alt="Cricket" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+          <img src="/img/portfolio/thumbnails/cricket.jpg" alt="Cricket" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
         </div>
         <div class="p-5">
           <h3 class="text-base font-semibold">Cricket</h3>
@@ -484,7 +481,7 @@
 
       <a class="group block rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
         <div class="aspect-[4/3] overflow-hidden">
-          <img loading="lazy" src="/img/portfolio/thumbnails/football.jpg" alt="Football" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+          <img src="/img/portfolio/thumbnails/football.jpg" alt="Football" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
         </div>
         <div class="p-5">
           <h3 class="text-base font-semibold">Football</h3>
@@ -493,7 +490,7 @@
 
       <a class="group block rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
         <div class="aspect-[4/3] overflow-hidden">
-          <img loading="lazy" src="/img/portfolio/thumbnails/travelling.jpg" alt="Travelling" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+          <img src="/img/portfolio/thumbnails/travelling.jpg" alt="Travelling" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
         </div>
         <div class="p-5">
           <h3 class="text-base font-semibold">Travelling</h3>
@@ -510,7 +507,7 @@
         <p class="text-slate-600 dark:text-slate-300 mb-4">
           If you have an interesting opportunity in London, drop me a message. Please include company name and a JD if you'd like a reply.
         </p>
-        <div class="flex flex-wrap gap-3">
+        <div class="flex gap-3">
           <a href="mailto:alitahir_@outlook.com" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 h-10 px-4 text-sm motion-safe:transition">
             <i data-lucide="mail" class="h-4 w-4"></i> Email
           </a>
@@ -560,7 +557,7 @@
   <!-- Footer -->
   <footer class="border-t border-slate-200 dark:border-slate-800 py-10">
     <div class="mx-auto max-w-6xl px-4 text-center text-sm text-slate-600 dark:text-slate-400">
-      <p>© <span id="year"></span> Ali Tahir. Built with Tailwind.</p>
+      <p>© <span id="year"></span> Ali Tahir. Built with Tailwind. No framework build required.</p>
     </div>
   </footer>
 
@@ -574,19 +571,23 @@
     // Footer year
     (function(){ const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear(); })();
 
-    // Theme toggle (desktop + mobile)
-    function setTheme(isDark){
-      document.documentElement.classList.toggle('dark', isDark);
-      try{ localStorage.setItem('theme', isDark?'dark':'light'); }catch(_){}
-      const sun=document.getElementById('sun'); const moon=document.getElementById('moon');
-      if(sun&&moon){ sun.classList.toggle('hidden',!isDark); moon.classList.toggle('hidden',isDark); }
+    // Theme toggle
+    function setThemeIcon(){
+      const isDark = document.documentElement.classList.contains('dark');
+      document.getElementById('sun')?.classList.toggle('hidden', !isDark);
+      document.getElementById('moon')?.classList.toggle('hidden', isDark);
     }
     (function(){
       const btn=document.getElementById('themeToggle');
       const btnM=document.getElementById('themeToggleMobile');
-      const getIsDark=()=>document.documentElement.classList.contains('dark');
-      btn && btn.addEventListener('click', ()=> setTheme(!getIsDark()));
-      btnM && btnM.addEventListener('click', ()=> setTheme(!getIsDark()));
+      function toggle(){
+        const isDark=document.documentElement.classList.toggle('dark');
+        try{ localStorage.setItem('theme', isDark?'dark':'light'); }catch(_){}
+        setThemeIcon();
+      }
+      btn?.addEventListener('click', toggle);
+      btnM?.addEventListener('click', toggle);
+      setThemeIcon();
     })();
 
     // External http links -> new tab
@@ -594,24 +595,12 @@
       document.querySelectorAll('a[href^="http"]').forEach(a=>{ a.target='_blank'; a.rel='noopener noreferrer'; });
     });
 
-    // Measure sticky header height -> update CSS var
+    // ----- Sticky header-aware anchor scrolling -----
     (function(){
       const header = document.getElementById('siteHeader');
-      function setH(){ 
-        if(!header) return;
-        const h = Math.ceil(header.getBoundingClientRect().height);
-        document.documentElement.style.setProperty('--header-h', h + 'px');
-      }
-      window.addEventListener('load', setH);
-      window.addEventListener('resize', setH);
-    })();
-
-    // Header-aware anchor scrolling (intercept)
-    (function(){
-      const header = document.getElementById('siteHeader');
-      const GAP = 12;
-      const headerH = () => header ? Math.ceil(header.getBoundingClientRect().height) : 0;
-
+      const GAP = 16;
+      function headerH(){ return header ? Math.ceil(header.getBoundingClientRect().height) : 0; }
+      function setCSSVars(){ document.documentElement.style.setProperty('--header-h', headerH() + 'px'); }
       function scrollToHash(hash, smooth=true){
         const id = hash && hash.startsWith('#') ? hash : '#'+hash;
         const el = document.querySelector(id);
@@ -620,7 +609,6 @@
         window.scrollTo({ top, behavior: smooth ? 'smooth' : 'auto' });
         return true;
       }
-
       document.addEventListener('click', (e)=>{
         const a = e.target.closest('a[href^="#"]');
         if(!a) return;
@@ -631,68 +619,52 @@
         e.preventDefault();
         history.pushState(null, '', target);
         scrollToHash(target, true);
-        // Close drawer if open
-        if(document.getElementById('mobileNav') && !document.getElementById('mobileNav').hidden){
-          closeDrawer();
-        }
+        // If click came from mobile drawer, close it
+        if(document.body.classList.contains('drawer-open')) closeDrawer();
       });
-
-      window.addEventListener('load', ()=>{
-        if(location.hash) setTimeout(()=>scrollToHash(location.hash, false), 0);
-      });
+      window.addEventListener('load', ()=>{ setCSSVars(); if(location.hash) setTimeout(()=>scrollToHash(location.hash, false), 0); });
       window.addEventListener('hashchange', ()=> scrollToHash(location.hash, true));
+      window.addEventListener('resize', setCSSVars);
     })();
 
-    // Mobile drawer logic
-    const mobileNav = document.getElementById('mobileNav');
-    const drawer = document.getElementById('drawer');
-    const overlay = document.getElementById('overlay');
-    const menuBtn = document.getElementById('menuBtn');
-    const closeBtn = document.getElementById('closeBtn');
+    // ----- Mobile drawer open/close with sticky header -----
+    (function(){
+      const drawer = document.getElementById('mobileMenu');
+      const backdrop = document.getElementById('mobileBackdrop');
+      const btnOpen = document.getElementById('mobileOpen');
+      const btnClose = document.getElementById('mobileClose');
 
-    function openDrawer(){
-      if(!mobileNav) return;
-      mobileNav.hidden = false;
-      mobileNav.classList.remove('pointer-events-none');
-      overlay.style.opacity = '1';
-      drawer.classList.remove('drawer-exit','drawer-exit-active','drawer-enter');
-      drawer.classList.add('drawer-enter-active');
-      menuBtn.setAttribute('aria-expanded','true');
-      // Focus first link for accessibility
-      const firstLink = drawer.querySelector('a,button');
-      firstLink && firstLink.focus();
-      document.body.style.overflow='hidden';
-    }
-    function closeDrawer(){
-      if(!mobileNav) return;
-      overlay.style.opacity = '0';
-      drawer.classList.remove('drawer-enter-active');
-      drawer.classList.add('drawer-exit','drawer-exit-active');
-      menuBtn.setAttribute('aria-expanded','false');
-      setTimeout(()=>{
-        mobileNav.hidden = true;
-        mobileNav.classList.add('pointer-events-none');
-        drawer.classList.remove('drawer-exit','drawer-exit-active');
-        drawer.classList.add('drawer-enter');
-        document.body.style.overflow='';
-      }, 250);
-    }
+      function openDrawer(){
+        drawer.classList.remove('-translate-x-full');
+        backdrop.classList.remove('pointer-events-none','opacity-0');
+        backdrop.classList.add('opacity-100');
+        document.body.classList.add('drawer-open','overflow-hidden');
+        // focus first focusable
+        const first = drawer.querySelector('a, button');
+        first && first.focus();
+      }
+      window.closeDrawer = function closeDrawer(){
+        drawer.classList.add('-translate-x-full');
+        backdrop.classList.add('opacity-0');
+        backdrop.classList.remove('opacity-100');
+        // allow css transition to finish before disabling pointer events
+        setTimeout(()=>backdrop.classList.add('pointer-events-none'), 300);
+        document.body.classList.remove('drawer-open','overflow-hidden');
+        btnOpen?.focus();
+      };
 
-    menuBtn && menuBtn.addEventListener('click', openDrawer);
-    closeBtn && closeBtn.addEventListener('click', closeDrawer);
-    overlay && overlay.addEventListener('click', closeDrawer);
-    window.addEventListener('keydown', (e)=>{
-      if(e.key === 'Escape' && mobileNav && !mobileNav.hidden) closeDrawer();
-    });
+      btnOpen?.addEventListener('click', openDrawer);
+      btnClose?.addEventListener('click', window.closeDrawer);
+      backdrop?.addEventListener('click', window.closeDrawer);
+      window.addEventListener('keydown', (e)=>{ if(e.key==='Escape' && document.body.classList.contains('drawer-open')) window.closeDrawer(); });
+    })();
 
-    // CONTACT FORM: fetch submit + reset on BFCache
+    // ---------- CONTACT FORM: fetch submit + reset on BFCache ----------
     (function(){
       const form = document.getElementById('contactForm');
       if(!form) return;
-
       const statusEl=document.getElementById('formStatus');
       const submitBtn=form.querySelector('button[type="submit"]');
-
       function setStatus(msg, ok){
         if(!statusEl) return;
         statusEl.textContent=msg;
@@ -712,7 +684,6 @@
         });
         clearStatus();
       }
-
       form.addEventListener('submit', async (e)=>{
         e.preventDefault();
         if(!form.checkValidity()){ form.reportValidity(); return; }
@@ -742,8 +713,6 @@
           }
         }
       });
-
-      // Clear on BFCache restore
       window.addEventListener('pageshow', (e)=>{
         let fromBFCache=!!e.persisted;
         try{

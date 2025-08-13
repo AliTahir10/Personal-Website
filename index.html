@@ -38,10 +38,10 @@
     @media (prefers-reduced-motion: reduce) { .motion-safe\:transition-none { transition: none !important; } }
     input, textarea, select { font-size: 16px; }
 
-    /* ----- Global anchored scrolling offset (header-aware) ----- */
+    /* ---------- Global anchor offset for ALL sections ---------- */
     :root{
-      --header-h: 80px;   /* updated at runtime */
-      --anchor-gap: 16px;
+      --header-h: 80px;   /* fallback until JS measures sticky header */
+      --anchor-gap: 16px; /* breathing room below navbar */
     }
     html { scroll-padding-top: calc(var(--header-h) + var(--anchor-gap)) !important; }
     section[id] { scroll-margin-top: calc(var(--header-h) + var(--anchor-gap)); }
@@ -66,46 +66,83 @@
 
 <body class="bg-gradient-to-b from-slate-50 to-white text-slate-800 dark:from-slate-950 dark:to-slate-900 dark:text-slate-100">
 
-  <!-- Header (always inline nav; sticky on all sizes) -->
-  <header id="siteHeader" class="sticky top-0 z-40 border-b border-slate-200/70 dark:border-slate-800/80 backdrop-blur bg-white/80 dark:bg-slate-900/70">
-    <div class="mx-auto max-w-6xl px-3 sm:px-4 py-3 flex items-center gap-3">
-      <!-- Brand -->
-      <a href="#home" class="shrink-0 font-semibold tracking-tight text-lg md:text-xl">Ali Tahir</a>
+  <!-- Header -->
+  <header id="siteHeader" class="sticky top-0 z-40 backdrop-blur bg-white/80 dark:bg-slate-900/70 border-b border-slate-200/60 dark:border-slate-800">
+    <div class="mx-auto max-w-6xl px-3 sm:px-4">
+      <!-- Grid with centered nav on desktop -->
+      <div class="grid grid-cols-[1fr_auto_1fr] items-center py-3">
+        <!-- Brand -->
+        <a href="#home" class="justify-self-start font-semibold tracking-tight text-lg">Ali Tahir</a>
 
-      <!-- Inline nav (scrollable on small screens) -->
-      <nav id="mainNav" class="flex-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] whitespace-nowrap md:whitespace-normal md:overflow-visible">
-        <div class="flex items-center gap-3 sm:gap-4 text-sm">
-          <a href="#about"      class="px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800">About</a>
-          <a href="#skills"     class="px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800">Skills</a>
-          <a href="#experience" class="px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800">Experience</a>
-          <a href="#projects"   class="px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800">Projects</a>
-          <a href="#fun"        class="px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800">Fun</a>
-          <a href="#contact"    class="px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800">Contact</a>
+        <!-- Center nav (desktop/tablet only) -->
+        <nav class="hidden md:flex gap-6 text-sm justify-self-center">
+          <a href="#about" class="hover:opacity-80">About</a>
+          <a href="#skills" class="hover:opacity-80">Skills</a>
+          <a href="#experience" class="hover:opacity-80">Experience</a>
+          <a href="#projects" class="hover:opacity-80">Projects</a>
+          <a href="#fun" class="hover:opacity-80">Fun</a>
+          <a href="#contact" class="hover:opacity-80">Contact</a>
+        </nav>
+
+        <!-- Right controls -->
+        <div class="justify-self-end flex items-center gap-2">
+          <button id="themeToggle" class="inline-flex items-center justify-center h-9 w-9 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 motion-safe:transition" aria-label="Toggle theme">
+            <svg id="sun" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden dark:inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            </svg>
+            <svg id="moon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+
+          <a id="cvLink" href="/img/CV.pdf" target="_blank" rel="noopener" class="hidden xs:inline-flex items-center gap-2 h-9 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-3 text-white text-sm motion-safe:transition shadow-soft">
+            <i data-lucide="file-down" class="h-4 w-4"></i>
+            <span>CV</span>
+          </a>
+
+          <!-- Mobile menu toggle -->
+          <button id="menuToggle" class="md:hidden inline-flex items-center justify-center h-9 w-9 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+          </button>
         </div>
-      </nav>
+      </div>
+    </div>
 
-      <!-- Actions -->
-      <div class="shrink-0 flex items-center gap-2">
-        <button id="themeToggle" class="inline-flex items-center justify-center h-9 w-9 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 motion-safe:transition" aria-label="Toggle theme">
-          <svg id="sun" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden dark:inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="4"></circle>
-            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
-          </svg>
-          <svg id="moon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        </button>
-
-        <a href="/img/CV.pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-2 h-9 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-3 text-white text-sm motion-safe:transition shadow-soft">
-          <i data-lucide="file-down" class="h-4 w-4"></i>
-          <span>CV</span>
-        </a>
+    <!-- Mobile menu overlay -->
+    <div id="mobileNav" class="hidden fixed inset-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur">
+      <div class="mx-auto max-w-6xl px-4 pt-3 pb-6">
+        <div class="flex items-center justify-between py-2">
+          <span class="text-base font-semibold">Menu</span>
+          <button id="menuClose" class="inline-flex items-center justify-center h-9 w-9 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800" aria-label="Close menu">
+            <i data-lucide="x" class="h-5 w-5"></i>
+          </button>
+        </div>
+        <nav class="mt-2 grid gap-2 text-base">
+          <a href="#home"        class="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">Home</a>
+          <a href="#about"       class="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">About</a>
+          <a href="#skills"      class="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">Skills</a>
+          <a href="#experience"  class="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">Experience</a>
+          <a href="#projects"    class="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">Projects</a>
+          <a href="#fun"         class="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">Fun</a>
+          <a href="#contact"     class="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">Contact</a>
+        </nav>
+        <div class="mt-4 flex gap-2">
+          <a href="/img/CV.pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-2 h-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-3 text-white text-sm shadow-soft">
+            <i data-lucide="file-down" class="h-4 w-4"></i>
+            <span>CV</span>
+          </a>
+          <button id="menuTheme" class="inline-flex items-center gap-2 h-10 rounded-xl border border-slate-200 dark:border-slate-700 px-3 text-sm hover:bg-slate-100 dark:hover:bg-slate-800">
+            <i data-lucide="moon" class="h-4 w-4"></i>
+            <span>Toggle theme</span>
+          </button>
+        </div>
       </div>
     </div>
   </header>
 
   <!-- Hero -->
-  <section id="home" class="relative mx-auto max-w-6xl px-4 pt-10 sm:pt-14 md:pt-20 pb-8 md:pb-12">
+  <section id="home" class="relative mx-auto max-w-6xl px-4 pt-12 md:pt-20 pb-10 md:pb-12">
     <div class="grid md:grid-cols-2 gap-8 items-center">
       <div>
         <div class="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-800 px-3 py-1 text-xs font-medium mb-4">
@@ -371,7 +408,7 @@
         </div>
         <div class="p-5">
           <div class="flex items-center justify-between">
-            <h3 class="text-base font-semibold">alitahir.co.uk (v1)</h3>
+            <h3 class="text-base font-semibold">Portfolio website</h3>
             <i data-lucide="external-link" class="h-4 w-4 opacity-70"></i>
           </div>
           <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">Source for personal site.</p>
@@ -389,7 +426,7 @@
         </div>
         <div class="p-5">
           <div class="flex items-center justify-between">
-            <h3 class="text-base font-semibold">Operating System (Java)</h3>
+            <h3 class="text-base font-semibold">Operating System</h3>
             <i data-lucide="external-link" class="h-4 w-4 opacity-70"></i>
           </div>
           <p class="text-sm text-slate-600 dark:text-slate-300 mt-2">University project — OS in Java.</p>
@@ -535,15 +572,26 @@
     // Footer year
     (function(){ const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear(); })();
 
-    // Theme toggle
+    // Theme toggle (+ mirror in mobile menu)
     (function(){
-      const btn=document.getElementById('themeToggle'); if(!btn) return;
-      btn.addEventListener('click', ()=>{
-        const isDark=document.documentElement.classList.toggle('dark');
-        try{ localStorage.setItem('theme', isDark?'dark':'light'); }catch(_){}
+      function setTheme(dark){
+        document.documentElement.classList.toggle('dark', dark);
+        try{ localStorage.setItem('theme', dark?'dark':'light'); }catch(_){}
         const sun=document.getElementById('sun'); const moon=document.getElementById('moon');
-        if(sun&&moon){ sun.classList.toggle('hidden',!isDark); moon.classList.toggle('hidden',isDark); }
-      });
+        if(sun&&moon){ sun.classList.toggle('hidden',!dark); moon.classList.toggle('hidden',dark); }
+      }
+      const btn=document.getElementById('themeToggle');
+      const menuBtn=document.getElementById('menuTheme');
+      const isDark=(()=>{
+        try{
+          const stored = localStorage.getItem('theme');
+          if(stored) return stored==='dark';
+          return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        }catch(_){ return false; }
+      })();
+      setTheme(isDark);
+      if(btn) btn.addEventListener('click', ()=> setTheme(!document.documentElement.classList.contains('dark')));
+      if(menuBtn) menuBtn.addEventListener('click', ()=> setTheme(!document.documentElement.classList.contains('dark')));
     })();
 
     // External http links -> new tab
@@ -551,58 +599,85 @@
       document.querySelectorAll('a[href^="http"]').forEach(a=>{ a.target='_blank'; a.rel='noopener noreferrer'; });
     });
 
-    // ----- Measure sticky header and keep CSS var accurate
+    // ---------- Sticky header-aware anchor scrolling (robust) ----------
     (function(){
       const header = document.getElementById('siteHeader');
+      const GAP = 16;
+
+      function headerH(){
+        return header ? Math.ceil(header.getBoundingClientRect().height) : 0;
+      }
       function setCSSVars(){
-        const h = header ? Math.ceil(header.getBoundingClientRect().height) : 0;
-        document.documentElement.style.setProperty('--header-h', h + 'px');
+        document.documentElement.style.setProperty('--header-h', headerH() + 'px');
       }
-      window.addEventListener('load', setCSSVars);
-      window.addEventListener('resize', setCSSVars);
-      // fonts loading can change height
-      document.fonts && document.fonts.ready && document.fonts.ready.then(setCSSVars);
-      setCSSVars();
-    })();
-
-    // ----- Robust same-page anchor navigation (works even if clicking same link repeatedly)
-    (function(){
-      const GAP = 16; // visual breathing space
-
-      function scrollToTarget(target, smooth=true){
-        const el = typeof target === 'string' ? document.querySelector(target) : target;
-        if(!el) return;
-        // Prefer native behavior with scroll-margin-top, but force recalc each time
-        el.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+      function scrollToId(id, smooth=true){
+        const sel = id.startsWith('#') ? id : '#' + id;
+        const el = document.querySelector(sel);
+        if(!el) return false;
+        const y = el.getBoundingClientRect().top + window.pageYOffset - headerH() - GAP;
+        window.scrollTo({ top: y, behavior: smooth ? 'smooth' : 'auto' });
+        return true;
       }
 
+      // Intercept same-page anchor clicks (desktop + mobile)
       document.addEventListener('click', (e)=>{
         const a = e.target.closest('a[href^="#"]');
         if(!a) return;
-        const url = new URL(a.getAttribute('href'), window.location.href);
-        const hash = url.hash;
-        if(!hash || !document.querySelector(hash)) return; // let browser handle off-page anchors
+        const href = a.getAttribute('href');
+        if(!href || href === '#') return;
+        const url = new URL(a.href, window.location.href);
+        if(url.pathname !== window.location.pathname) return; // allow external anchors
+        if(!document.querySelector(url.hash)) return;
+
         e.preventDefault();
-        // Update history even if same hash so back/forward behaves
-        if(hash !== window.location.hash){
-          history.pushState(null, '', hash);
-        } else {
-          history.replaceState(null, '', hash);
-        }
-        // Force scroll every click
-        scrollToTarget(hash, true);
-        // Tidy focus
-        a.blur && a.blur();
+        // Close mobile menu if open BEFORE scrolling (so header height is correct)
+        closeMenu();
+        // Scroll even if clicking to the same hash again
+        scrollToId(url.hash, true);
+        // Keep the hash in the URL without triggering native jump
+        history.pushState(null, '', url.hash);
       });
 
-      // On load with hash present
+      // Hash-change (e.g., back/forward)
+      window.addEventListener('hashchange', ()=> scrollToId(location.hash || '#home', true));
+
+      // Initial load
       window.addEventListener('load', ()=>{
-        if(location.hash && document.querySelector(location.hash)){
-          // Jump without animation then adjust smoothly into place to avoid jank
-          scrollToTarget(location.hash, false);
-          setTimeout(()=>scrollToTarget(location.hash, true), 0);
-        }
+        setCSSVars();
+        if(location.hash) setTimeout(()=>scrollToId(location.hash, false), 0);
       });
+      window.addEventListener('resize', setCSSVars);
+
+      // Mobile menu logic
+      const overlay = document.getElementById('mobileNav');
+      const openBtn = document.getElementById('menuToggle');
+      const closeBtn = document.getElementById('menuClose');
+
+      function openMenu(){
+        if(!overlay) return;
+        overlay.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+        if(openBtn) openBtn.setAttribute('aria-expanded','true');
+      }
+      function closeMenu(){
+        if(!overlay) return;
+        overlay.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+        if(openBtn) openBtn.setAttribute('aria-expanded','false');
+      }
+      if(openBtn) openBtn.addEventListener('click', openMenu);
+      if(closeBtn) closeBtn.addEventListener('click', closeMenu);
+      // Close when clicking outside menu content
+      if(overlay){
+        overlay.addEventListener('click', (e)=>{
+          if(e.target === overlay) closeMenu();
+        });
+      }
+      // ESC to close
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeMenu(); });
+
+      // Expose close for anchor handler above
+      window.closeMenu = closeMenu;
     })();
 
     // ---------- CONTACT FORM: fetch submit + reset on BFCache ----------

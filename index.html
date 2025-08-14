@@ -58,6 +58,19 @@
       -webkit-touch-callout: none;
       pointer-events: none; /* clicks still pass to parent links/cards */
     }
+    /* Disable mouse selection everywhere except inputs/areas/contenteditable */
+    html, body, body *:not(input):not(textarea):not([contenteditable]):not([contenteditable="true"]) {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+    /* Keep selection enabled where users type */
+    input, textarea, [contenteditable], [contenteditable="true"] {
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      user-select: text;
+    }
+
   </style>
 
   <!-- Icons (Lucide) -->
@@ -770,40 +783,47 @@
     })();
 
     // ---------- BLOCK Ctrl/Cmd + A (except in inputs/areas/contenteditable) & harden images ----------
+    // ---------- Lock selection + copy/cut + context menu outside editables ----------
     (function(){
       function isEditable(el){
-        return !!el.closest('input, textarea, [contenteditable=""], [contenteditable="true"]');
+        return !!el.closest('input, textarea, [contenteditable], [contenteditable="true"]');
       }
-
-      // Block Select All on non-editable contexts
+    
+      // Block Ctrl/Cmd + A outside editables
       document.addEventListener('keydown', (e) => {
-        const key = e.key && e.key.toLowerCase ? e.key.toLowerCase() : e.key;
+        const key = e.key?.toLowerCase?.() ?? e.key;
         if ((e.ctrlKey || e.metaKey) && key === 'a' && !isEditable(e.target)) {
           e.preventDefault();
         }
       });
-
-      // Prevent selecting/dragging/right-clicking images
+    
+      // Stop mouse selection start anywhere outside editables
       document.addEventListener('selectstart', (e) => {
-        if (e.target.closest('img')) e.preventDefault();
+        if (!isEditable(e.target)) e.preventDefault();
       });
+    
+      // Block Copy/Cut outside editables
+      document.addEventListener('copy', (e) => {
+        if (!isEditable(e.target)) e.preventDefault();
+      });
+      document.addEventListener('cut', (e) => {
+        if (!isEditable(e.target)) e.preventDefault();
+      });
+    
+      // Disable right-click context menu outside editables
+      document.addEventListener('contextmenu', (e) => {
+        if (!isEditable(e.target)) e.preventDefault();
+      });
+    
+      // Prevent dragging images
       document.addEventListener('dragstart', (e) => {
         if (e.target.closest('img')) e.preventDefault();
       });
-      document.addEventListener('contextmenu', (e) => {
-        if (e.target.closest('img')) e.preventDefault();
-      });
-
-      // Ensure all current images are not draggable
+    
+      // Make sure current images are not draggable
       document.querySelectorAll('img').forEach(img => img.setAttribute('draggable', 'false'));
-      // Optional: observe future images
-      // new MutationObserver(mutations => {
-      //   mutations.forEach(m => m.addedNodes.forEach(n => {
-      //     if (n.nodeType === 1 && n.matches && n.matches('img')) n.setAttribute('draggable','false');
-      //     if (n.nodeType === 1) n.querySelectorAll && n.querySelectorAll('img').forEach(img => img.setAttribute('draggable','false'));
-      //   }));
-      // }).observe(document.documentElement, { childList: true, subtree: true });
     })();
+
   </script>
 
 </body>

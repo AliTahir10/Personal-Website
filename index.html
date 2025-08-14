@@ -47,6 +47,17 @@
     section[id] { scroll-margin-top: calc(var(--header-h) + var(--anchor-gap)); }
 
     .backdrop-blur-md { backdrop-filter: blur(8px); }
+
+    /* ---------- PROTECT IMAGES: unselectable, undraggable, no iOS callout ---------- */
+    img {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+      -webkit-user-drag: none;
+      user-drag: none;
+      -webkit-touch-callout: none;
+      pointer-events: none; /* clicks still pass to parent links/cards */
+    }
   </style>
 
   <!-- Icons (Lucide) -->
@@ -756,6 +767,42 @@
         }catch(_){}
         if(fromBFCache) resetContactForm();
       });
+    })();
+
+    // ---------- BLOCK Ctrl/Cmd + A (except in inputs/areas/contenteditable) & harden images ----------
+    (function(){
+      function isEditable(el){
+        return !!el.closest('input, textarea, [contenteditable=""], [contenteditable="true"]');
+      }
+
+      // Block Select All on non-editable contexts
+      document.addEventListener('keydown', (e) => {
+        const key = e.key && e.key.toLowerCase ? e.key.toLowerCase() : e.key;
+        if ((e.ctrlKey || e.metaKey) && key === 'a' && !isEditable(e.target)) {
+          e.preventDefault();
+        }
+      });
+
+      // Prevent selecting/dragging/right-clicking images
+      document.addEventListener('selectstart', (e) => {
+        if (e.target.closest('img')) e.preventDefault();
+      });
+      document.addEventListener('dragstart', (e) => {
+        if (e.target.closest('img')) e.preventDefault();
+      });
+      document.addEventListener('contextmenu', (e) => {
+        if (e.target.closest('img')) e.preventDefault();
+      });
+
+      // Ensure all current images are not draggable
+      document.querySelectorAll('img').forEach(img => img.setAttribute('draggable', 'false'));
+      // Optional: observe future images
+      // new MutationObserver(mutations => {
+      //   mutations.forEach(m => m.addedNodes.forEach(n => {
+      //     if (n.nodeType === 1 && n.matches && n.matches('img')) n.setAttribute('draggable','false');
+      //     if (n.nodeType === 1) n.querySelectorAll && n.querySelectorAll('img').forEach(img => img.setAttribute('draggable','false'));
+      //   }));
+      // }).observe(document.documentElement, { childList: true, subtree: true });
     })();
   </script>
 
